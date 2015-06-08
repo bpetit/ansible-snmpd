@@ -1,0 +1,11 @@
+- name: install snmpd
+  apt: name=snmpd state=present
+- name: ensure non-free debian repository is active
+  apt_repository: repo="deb http://ftp2.fr.debian.org/debian/ {{ ansible_distribution_release }} main non-free" state=present
+  when: ansible_distribution == 'Debian'
+- name: install snmp-mibs-downloader
+  apt: name=snmp-mibs-downloader state=present
+- name: put the right snmpd.conf file
+  template: src=snmpd.conf dest=/etc/snmp/snmpd.conf
+  notify:
+    - restart snmpd
